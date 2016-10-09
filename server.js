@@ -2,8 +2,10 @@ var express = require('express');
 var path = require('path');
 var User = require('./db').User;
 var Room = require('./db').Room;
-var bodyParser = require('body-parser');
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+var bodyParser = require('body-parser');
 app.get('/',function (req, res) {
    res.sendFile(path.resolve('app/index.html'));
 });
@@ -11,6 +13,11 @@ app.use(express.static(path.resolve('public')));
 app.use(express.static(path.resolve('app')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+io.on('connection',function (socket) {
+   socket.on('message',function (msg) {
+      io.emit('message',msg);
+   })
+});
 app.post('/user/login',function (req, res) {
    var email = req.body.email;
    var user = {email};
@@ -61,4 +68,17 @@ app.post('/rooms/add',function (req,res) {
       }
    });
 });
-app.listen(9090);
+app.get('/rooms/:id',function (req, res) {
+   Room.findById(req.params.id,function (err, room) {
+      if(err) {
+         res.send({err: 1,msg: '创建失败',data: err})
+      }else{
+         if(room) {
+            res.send({err: 0,msg: '创建成功',data:room})
+         }else{
+            res.send('hello');
+         }
+      }
+   })
+});
+server.listen(9090);
