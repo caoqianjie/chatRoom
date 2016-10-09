@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-xs-12">
+        <form class="form-horizontal" ng-submit="login()" name="userform" novalidate="novalidate">
+            <div class="form-group">
+                <label class="control-label col-xs-2" for="email">邮箱</label>
+                <div class="col-xs-3">
+                    <input autocomplete="off" id="email" ng-model="email" type="email" class="form-control" ng-required="true" name="email">
+                    <div class="help-block" ng-show="userform.email.$dirty&&userform.email.$invalid">
+                        <div class="alert-danger" ng-show="userform.email.$error.required">邮箱必填</div>
+                        <div class="alert-danger" ng-show="userform.email.$error.email">邮箱格式不合法</div>
+                    </div>
+                </div>
+                <div class="col-xs-1">
+                    <button ng-disabled="userform.$pristine || (userform.$dirty&&userform.$invalid)" type="submit" class="btn btn-primary">登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
